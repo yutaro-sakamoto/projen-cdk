@@ -96,6 +96,10 @@
     },
     {
       "name": "projen",
+      "type": "peer"
+    },
+    {
+      "name": "projen",
       "type": "runtime"
     }
   ],
