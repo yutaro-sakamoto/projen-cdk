@@ -1,5 +1,5 @@
 {
-  "name": "projen-cdk",
+  "name": "@yutaro-sakamoto/projen-cdk",
   "repository": {
     "type": "git",
     "url": "https://github.com/yutaro-sakamoto/projen-cdk.git"
@@ -56,10 +56,13 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
+  "peerDependencies": {
+    "projen": "^0.91.8"
+  },
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "publishConfig": {
-    "access": "public"
+    "registry": "https://npm.pkg.github.com/"
   },
   "version": "0.0.0",
   "jest": {
