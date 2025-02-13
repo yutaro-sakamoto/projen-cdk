@@ -1,4 +1,4 @@
-import { awscdk, SampleFile } from 'projen';
+import { awscdk, SampleFile, YamlFile } from 'projen';
 
 export interface AwsCdkTypeScriptAppOptions extends awscdk.AwsCdkTypeScriptAppOptions { }
 
@@ -16,6 +16,37 @@ GitHub Actionsのワークフローファイルにおいて、useキーワード
 日本語の文章は、必ず「である調」を使い、「ですます調」は使わないこと。
 例えば、「変数である」「実行せよ」という文は使って良いが、「変数です」「実行してください」という文は使わないこと。
 `,
+    });
+
+    new YamlFile(this, '.github/workflows/check-workflows.yml', {
+      obj: {
+        name: 'Check workflow files',
+        on: {
+          workflow_call: {},
+        },
+        permissions: {
+          contents: 'read',
+        },
+        jobs: {
+          build: {
+            'runs-on': 'ubuntu-latest',
+            'steps': [
+              {
+                name: 'Checkout',
+                uses: 'actions/checkout@v4',
+              },
+              {
+                name: 'Install actionlint',
+                run: 'GOBIN=$(pwd) go install github.com/rhysd/actionlint/cmd/actionlint@latest',
+              },
+              {
+                name: 'Run actionlint',
+                run: './actionlint',
+              },
+            ],
+          },
+        },
+      },
     });
   }
 }
