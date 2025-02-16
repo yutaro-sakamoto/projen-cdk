@@ -84,5 +84,58 @@ Pull Requestの目的と概要を記載する
         },
       },
     });
+
+    new YamlFile(this, '.github/workflows/test.yml', {
+      obj: {
+        name: 'Run tests',
+        on: {
+          workflow_call: {},
+        },
+        permissions: {
+          contents: 'read',
+        },
+        jobs: {
+          test: {
+            'runs-on': 'ubuntu-latest',
+            'steps': [
+              {
+                uses: 'actions/checkout@v4',
+              },
+              {
+                uses: 'actions/setup-node@v4',
+                with: {
+                  'node-version': '22',
+                  'cache': 'npm',
+                  'cache-dependency-path': 'package-lock.json',
+                },
+              },
+              {
+                run: 'npm ci',
+              },
+              {
+                name: 'Check format by Prettier',
+                run: 'npx prettier . --check',
+              },
+              {
+                name: 'Check by ESLint',
+                run: 'npx eslint .',
+              },
+              {
+                name: 'Run tests',
+                run: 'npm test',
+              },
+              {
+                name: 'Check docs',
+                run: 'npx typedoc --validation --treatWarningsAsErrors --treatValidationWarningsAsErrors lib/*.ts bin/*.ts',
+              },
+              {
+                name: 'Synthesize the CDK stack',
+                run: 'npx cdk synth',
+              },
+            ],
+          },
+        },
+      },
+    });
   }
 }
