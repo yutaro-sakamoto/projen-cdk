@@ -137,5 +137,39 @@ Pull Requestの目的と概要を記載する
         },
       },
     });
+
+    new YamlFile(this, '.github/workflows/push.yml', {
+      obj: {
+        name: 'push',
+        on: {
+          push: {
+            'branches-ignore': ['main'],
+          },
+        },
+        concurrency: {
+          'group': '${{ github.workflow }}-${{ github.ref }}',
+          'cancel-in-progress': true,
+        },
+        permissions: {
+          contents: 'read',
+        },
+        jobs: {
+          'check-workflows': {
+            permissions: {
+              contents: 'read',
+            },
+            uses: './.github/workflows/check-workflows.yml',
+          },
+          'test': {
+            needs: 'check-workflows',
+            permissions: {
+              contents: 'read',
+            },
+            secrets: 'inherit',
+            uses: './.github/workflows/test.yml',
+          },
+        },
+      },
+    });
   }
 }
